@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartCrop Advisor</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h3>🌾 Crop List</h3>
+      <ul id="crop-list">
+        {% for crop in crops %}
+          <li onclick="showCropInfo('{{ crop.name }}')">{{ crop.name|capitalize }}</li>
+        {% endfor %}
+      </ul>
+    </aside>
+
+    <div class="main-content">
+      <h1>SmartCrop Advisor</h1>
+      <form method="POST" action="/predict">
+        <input type="number" name="N" placeholder="Nitrogen (N)" required />
+        <input type="number" name="P" placeholder="Phosphorus (P)" required />
+        <input type="number" name="K" placeholder="Potassium (K)" required />
+        <input type="number" name="temperature" placeholder="Temperature (°C)" required />
+        <input type="number" name="humidity" placeholder="Humidity (%)" required />
+        <input type="number" name="ph" step="0.01" placeholder="Soil pH" required />
+        <input type="number" name="rainfall" placeholder="Rainfall (mm)" required />
+        <button type="submit">Predict Crop</button>
+      </form>
+
+      {% if result %}
+
+      <div class="result">
+        <h2>✅ Recommended Crop: {{ result|capitalize }}</h2>
+        <ul>
+            <li><strong>Soil Type:</strong> {{ details.soil }}</li>
+            <li><strong>Season:</strong> {{ details.season }}</li>
+            <li><strong>Climate:</strong> {{ details.temperature }}</li>
+        </ul>
+    </div>
+    
+    {% if history %}
+        <div class="history-section">
+            <h3>Prediction History</h3>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Crop</th>
+                        <th>Soil Type</th>
+                        <th>Season</th>
+                        <th>Climate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in history %}
+                        <tr>
+                            <td>{{ item.crop|capitalize }}</td>
+                            <td>{{ item.soil }}</td>
+                            <td>{{ item.season }}</td>
+                            <td>{{ item.climate }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+  {% endif %}
+
+    
+      <div id="crop-info" class="info-box">
+        <h4 id="crop-name"></h4>
+        <p><strong>Soil:</strong> <span id="crop-soil"></span></p>
+        <p><strong>Temperature:</strong> <span id="crop-temp"></span></p>
+        <p><strong>Region:</strong> <span id="crop-region"></span></p>
+        <p><strong>Season:</strong> <span id="crop-season"></span></p>
+      </div>
+    </div>
+  </div>
+  <script src="/static/script.js" defer></script>
+</body>
+</html>
